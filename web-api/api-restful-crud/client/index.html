@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Memo</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js">
+    </script>
+  </head>
+  <body>
+    <div>
+      <form>
+      <div >
+          <label for="memoTitle">Title</label>
+          <input id="memoTitle" type="text" >
+        </div>
+        <div>
+          <label for="memoContent">Content</label>
+          <input id="memoContent" type="text" >
+        </div>
+          <button onclick="addMemo()">add</button>
+        </form>
+    </div>
+
+      <table border='1px'>
+        <thead>
+          <tr>
+            <th>id</th>
+            <th>title</th>
+            <th>content</th>
+            <th>edit</th>
+            <th>delete</th>
+          </tr>
+        </thead>
+        <tbody>
+
+        </tbody>
+      </table>
+
+  </body>
+  <script type="text/javascript">
+    $.ajax({
+      url: 'http://localhost:3000/',
+      type: 'GET',
+      success: function(memos){
+        for(let i = 0; i < memos.length; i++){
+          $('tbody').append(`
+            <tr class="${memos[i]._id}">
+              <td>${memos[i]._id}</td>
+              <td id="title-${memos[i]._id}">${memos[i].title}</td>
+              <td id="content-${memos[i]._id}">${memos[i].content}</td>
+              <td>
+              <div id="modal${memos[i]._id}" class="modal">
+                <div class="modal-content">
+                    <div class="input-field">
+                      <label for="memoTitle">Title</label>
+                      <input id="editTitle-${memos[i]._id}" type="text" value="${memos[i].title}">
+                    </div>
+                    <div class="input-field">
+                      <label for="memoContent">Content</label>
+                      <input id="editContent-${memos[i]._id}" type="text" value="${memos[i].content}">
+                    </div>
+                    <button onclick="edit('${memos[i]._id}')">update</button>
+                  </div>
+                </div></td>
+              <td><a href="#" onclick="del('${memos[i]._id}')" >delete</a></td>
+            </tr>
+          `)
+        }
+      }
+    })
+    function addMemo() {
+      $.ajax({
+        url: 'http://localhost:3000',
+        type: 'POST',
+        data: {
+          title: $('#memoTitle').val(),
+          content: $('#memoContent').val()
+        },
+        success: function (memo) {
+          $('tbody').append(`
+            <tr class="${memo._id}">
+              <td>${memo._id}</td>
+              <td id="title-${memo._id}">${memo.title}</td>
+              <td id="content-${memo._id}">${memo.content}</td>
+              <td>
+              <div id="modal${memo._id}" class="modal">
+                <div class="modal-content">
+                    <div class="input-field">
+                      <label for="memoTitle">Title</label>
+                      <input id="editTitle-${memo._id}" type="text" value="${memo.title}">
+                    </div>
+                    <div class="input-field">
+                      <label for="memoContent">Content</label>
+                      <input id="editContent-${memo._id}" type="text" value="${memo.content}">
+                    </div>
+                    <button  onclick="edit('${memo._id}')">update</button>
+                  </div>
+                </div></td>
+              <td><a href="#" onclick="del('${memo._id}')" >delete</a></td>
+            </tr>
+          `)
+        }
+      })
+    }
+    function popup(){
+      $('.modal').modal();
+    }
+    function edit(id) {
+      // $(`#modal${id}`).modal('close');
+      $.ajax({
+        url: `http://localhost:3000/${id}`,
+        type: 'PUT',
+        data: {
+          title: $(`#editTitle-${id}`).val(),
+          content: $(`#editContent-${id}`).val()
+        },
+        success: function(){
+          $(`#title-${id}`).html($(`#editTitle-${id}`).val())
+          $(`#content-${id}`).html($(`#editContent-${id}`).val())
+        }
+      })
+    }
+    function del(id){
+      var confirmation = confirm('Are you sure?')
+      if (confirmation == true){
+        $.ajax({
+          url: `http://localhost:3000/${id}`,
+          type: 'DELETE',
+          success: function(memo){
+            console.log("Delete memo")
+            $(`.${id}`).remove()
+          }
+        })
+      }
+    }
+  </script>
+</html>
