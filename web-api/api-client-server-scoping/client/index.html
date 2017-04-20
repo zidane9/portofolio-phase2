@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Client Server Scoping</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js">
+    </script>
+  </head>
+  <body>
+    <div>
+      <div class="">
+        <center><h1 id="judul">Judul</h1></center>
+      </div>
+      <div>
+        <button id="mirrorButton" onclick="mirror()">data-heading</button>
+        <button id="urlButton" onclick="getUrl()">URL button</button>
+        <button id="mealsButton" onclick="dataMeals()">Meals</button>
+      </div>
+
+    </div>
+  </body>
+
+  <script>
+    function mirror() {
+      if(document.getElementById("judul").innerHTML == "Judul"){
+        document.getElementById("judul").innerHTML = $("#mirrorButton").text()
+      } else {
+        document.getElementById("judul").innerHTML = "Judul"
+      }
+    }
+
+    function getUrl() {
+      if(document.getElementById("judul").innerHTML == "Judul"){
+        document.getElementById("judul").innerHTML = document.URL
+      } else {
+        document.getElementById("judul").innerHTML = "Judul"
+      }
+    }
+    
+    $(document).ready(function() {
+      $.ajax({
+        url: "http://localhost:3000/",
+        type: "GET",
+        success: function(result) {
+          localStorage.setItem("meals", result)
+        }
+      })
+    })
+    function dataMeals() {
+      var meals = localStorage.getItem("meals").split(",")
+      var rand = Math.round(Math.random()*4)
+      document.getElementById("judul").innerHTML = meals[rand]
+    }
+  </script>
+
+</html>
