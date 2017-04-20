@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Todo</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js">
+    </script>
+  </head>
+  <body>
+    <div>
+      <table id="todo" border="1px">
+        <thead>
+          <th>ID</th>
+          <th>Todo</th>
+          <th>Status</th>
+          <th>To Complete</th>
+          <th>Delete</th>
+
+        </thead>
+      </table>
+    </div>
+
+    <br>
+    <div>
+      Todo : <input type="text" id="todoInput">
+    </div>
+    <div class="">
+      <button type="button" name="button" onclick="addTodo()">Add todo</button>
+    </div>
+  </body>
+
+  <script type="text/javascript">
+  $.ajax({url: "http://localhost:3000",
+    type: 'GET',
+    success: function(result){
+      for(let i=0;i<result.length;i++){
+        let completed = result[i].isComplete ==true ? 'Completed':'Not yet Completed'
+        $('#todo').append(`
+          <tr id='${result[i]._id}'>
+            <td>${result[i]._id}</td>
+            <td>${result[i].content}</td>
+            <td id="complete${result[i]._id}">${completed}</td>
+            <td><a href="#" onclick="updateComplete('${result[i]._id}')">Complete</a></td>
+            <td><a href="#" onclick="remove('${result[i]._id}')">Delete</a></td>
+          </tr>
+          `)
+      }
+  }})
+
+  function addTodo(){
+    $.ajax({url: "http://localhost:3000",
+      type: 'POST',
+      data: {
+        content: $('#todoInput').val()
+      },
+      success: function(result){
+        let completed = result.isComplete ==true ? 'Completed':'Not yet Completed';
+        $('#todo').append(`
+          <tr id="${result._id}">
+            <td>${result._id}</td>
+            <td>${result.content}</td>
+            <td id="complete${result._id}">${completed}</td>
+            <td><a href="#" onclick="updateComplete('${result._id}')">Complete</a></td>
+            <td><a href="#" onclick="remove('${result._id}')">Delete</a></td>
+          </tr>
+          `)
+    }})
+  }
+
+  function updateComplete(id){
+    $.ajax({url: "http://localhost:3000/complete/"+id,
+      type: 'PUT',
+      success: function(result){
+        $(`#complete${id}`).html('Completed');
+    }})
+  }
+
+  function remove(id){
+    $.ajax({url: "http://localhost:3000/"+id,
+      type: 'DELETE',
+      success: function(result){
+        console.log('Deleted');
+        $(`#${id}`).remove();
+    }})
+  }
+  </script>
+</html>
