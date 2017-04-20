@@ -1,0 +1,22 @@
+[
+  {
+    "name": "anto",
+    "skillList": [
+      {"grade": "5",
+      "skill": "58f8f55ec592936be8f3b73b"},
+      {"grade": "6",
+      "skill": "58f8f55ec592936be8f3b73c"}
+
+    ]
+  },
+  {
+    "name": "budi",
+    "skillList": [
+      {"grade": "8",
+      "skill": "58f8f55ec592936be8f3b73b"},
+      {"grade": "3",
+      "skill": "58f8f55ec592936be8f3b73d"}
+
+    ]
+  }
+]
