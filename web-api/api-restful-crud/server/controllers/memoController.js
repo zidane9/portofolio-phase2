@@ -14,8 +14,8 @@ let getAll = function (req, res, next) {
 
 let getOne = function(req,res,next){
   Memo.findOne({_id: req.params.id}, function (err, memo) {
-    if (err) return handleError(err);
-    res.send(memo);
+    if (err) res.send(err);
+    else res.send(memo);
   })
 };
 
@@ -24,8 +24,8 @@ let createOne = function (req, res, next) {
     title : req.body.title,
     content : req.body.content,
   }, function (error, memo){
-    if(error) throw error;
-    res.send(memo);
+    if(error) res.send(error);
+    else res.send(memo);
   })
 };
 
@@ -36,14 +36,14 @@ let update = function (req, res, next) {
   }
   Memo.update({ _id: req.params.id }, { $set: temp}, function(err, response){
     if(err) res.send(err);
-    res.send(response);
+     else res.send(response);
   });
 };
 
 let deleteOne = function (req, res, next) {
   Memo.findOne({_id: req.params.id}).remove(function(err, response){
     if(err) res.send(err);
-    res.send(response);
+    else res.send(response);
   });
 };
 
